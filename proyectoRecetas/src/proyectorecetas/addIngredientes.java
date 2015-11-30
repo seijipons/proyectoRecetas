@@ -38,6 +38,7 @@ public class addIngredientes extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         combo_unidades = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -56,28 +57,37 @@ public class addIngredientes extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setLabel("Cerrar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txt_precio, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
-                    .addComponent(txt_ingrediente))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(combo_unidades, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1)
-                .addGap(137, 137, 137))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton1)
+                        .addGap(44, 44, 44)
+                        .addComponent(jButton2))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txt_precio, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
+                            .addComponent(txt_ingrediente))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(combo_unidades, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -93,7 +103,9 @@ public class addIngredientes extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(combo_unidades, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addComponent(jButton1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -137,30 +149,36 @@ public class addIngredientes extends javax.swing.JFrame {
         }
         
         if(unn.compareToIgnoreCase("")==0){
-        System.out.println("No se hace registro");
+            System.out.println("No se hace registro");
         }else{
-            
-       
-        try
-        {
-            ConectaBD c = new ConectaBD(2);
-            int nueIngrediente;
-            String consulta="INSERT INTO ingredientes(ingrediente, precio,unidad,status) VALUES ('"+ingrediente+"',"+precio+",'"+unn+"',"+1+");";
-            Statement sentencia = c.conexion.createStatement();
-            nueIngrediente=sentencia.executeUpdate(consulta);
-            System.out.println(consulta+"   Registrando nuevo ingrediente");
-                        
-        }catch(SQLException ex){
-            System.out.println("No se registra ingrediente");
-            ex.printStackTrace();
-                    
+                try
+                {
+                    ConectaBD c = new ConectaBD(2);
+                    int nueIngrediente;
+                    String consulta="INSERT INTO ingredientes(ingrediente, precio,unidad,status) VALUES ('"+ingrediente+"',"+precio+",'"+unn+"',"+1+");";
+                    Statement sentencia = c.conexion.createStatement();
+                    nueIngrediente=sentencia.executeUpdate(consulta);
+                    System.out.println(consulta+"   Registrando nuevo ingrediente");
+
+                }catch(SQLException ex){
+                    System.out.println("No se registra ingrediente");
+                    ex.printStackTrace();
+
+                }
+
+            System.out.println("Hecho");
+            JOptionPane.showMessageDialog(rootPane, "Ingrediente "+ingrediente+" agregado con éxito.", "Ingrediente agregado.", WIDTH);
+            txt_ingrediente.setText("");
+            txt_precio.setText("");
+            combo_unidades.setSelectedIndex(0);
         }
-     System.out.println("Hecho");
-     
-      }
      
      
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        this.hide();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -199,6 +217,7 @@ public class addIngredientes extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox combo_unidades;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
