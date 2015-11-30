@@ -6,6 +6,10 @@
 package proyectorecetas;
 
 import java.awt.Dimension;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import sun.applet.Main;
 
 /**
  *
@@ -18,6 +22,7 @@ public class Menu extends javax.swing.JFrame {
      */
     public Menu() {
         initComponents();
+        playSound("05 Saltorella la Manúelina (Chapter II).wav");
     }
 
     /**
@@ -91,6 +96,26 @@ this.setVisible(false);
 // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    public static synchronized void playSound(final String ola) {
+  new Thread(new Runnable() {
+  // The wrapper thread is unnecessary, unless it blocks on the
+  // Clip finishing; see comments.
+    public void run() {
+      try {
+          
+        Clip clip = AudioSystem.getClip();
+        AudioInputStream inputStream = AudioSystem.getAudioInputStream(
+          Main.class.getResourceAsStream("../../Restaurante/"+ola));
+        clip.open(inputStream);
+        clip.start(); 
+      } catch (Exception e) {
+        System.err.println(e.getMessage());
+          
+      }
+    }
+  }).start();
+}
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 this.setVisible(false);        // TODO add your handling code here:
 listaRecetas ob=new listaRecetas();
