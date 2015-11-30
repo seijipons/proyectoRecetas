@@ -24,7 +24,33 @@ DefaultTableModel valoresTabla;
         initComponents();
         consultaRecetas();
     }
-
+    
+    private boolean hayIngredientes(){
+        ResultSet resultadoIngredientes=null;
+        try{
+            ConectaBD c = new ConectaBD(2);
+            ResultSetMetaData datosConsulta;
+            String consulta="SELECT * FROM  `ingredientes` ";
+            Statement statement=c.conexion.createStatement();
+            resultadoIngredientes=statement.executeQuery(consulta);
+            
+            int contadorIngredientes=0;
+            while(resultadoIngredientes.next()){
+               contadorIngredientes++;
+            }
+            
+            if(contadorIngredientes==0){
+                System.out.println("--> No hay ingredientes");
+                resultadoIngredientes=null;
+            }
+            
+        }catch(Exception ex){
+            System.out.println("No consulta productos: "+ ex.getMessage());
+        }
+        
+        return (resultadoIngredientes!=null);
+    }
+    
     private void consultaRecetas(){
         try{
             ConectaBD c=new ConectaBD(1);
@@ -173,12 +199,17 @@ DefaultTableModel valoresTabla;
     }//GEN-LAST:event_butt_verRecetaActionPerformed
 
     private void butt_nuevaRecetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_butt_nuevaRecetaActionPerformed
-     AltaRecetas obj = new AltaRecetas();
+     AltaRecetas altaRecetas = new AltaRecetas();
      
-     
-     
-        obj.setVisible(true);
-        
+     if(hayIngredientes()){
+         altaRecetas.setVisible(true);
+     }
+     else{
+         addIngredientes objAddIng = new addIngredientes();
+         objAddIng.setVisible(true);
+         
+         JOptionPane.showMessageDialog(rootPane, "No hay ingredientes registrados. Agregue, primero, algunos ingredientes.", "No hay ingredientes", WIDTH);
+     }
         
     }//GEN-LAST:event_butt_nuevaRecetaActionPerformed
 
