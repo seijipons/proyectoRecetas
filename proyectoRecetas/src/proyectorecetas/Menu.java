@@ -59,14 +59,14 @@ public class Menu extends javax.swing.JFrame {
         getContentPane().add(jButton1);
         jButton1.setBounds(10, 203, 150, 30);
 
-        jButton2.setText("Recetas");
+        jButton2.setText("Gestionar Recetas");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
         getContentPane().add(jButton2);
-        jButton2.setBounds(140, 260, 130, 30);
+        jButton2.setBounds(140, 260, 150, 30);
 
         jButton3.setText("Venta al cliente");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -107,7 +107,8 @@ this.setVisible(false);
         AudioInputStream inputStream = AudioSystem.getAudioInputStream(
           Main.class.getResourceAsStream("../../Restaurante/"+ola));
         clip.open(inputStream);
-        clip.start(); 
+        clip.start();
+        clip.loop(2);
       } catch (Exception e) {
         System.err.println(e.getMessage());
           
