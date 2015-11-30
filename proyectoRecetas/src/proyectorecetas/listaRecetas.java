@@ -59,28 +59,18 @@ DefaultTableModel valoresTabla;
             String consulta="SELECT * FROM  `recetas` ";
             Statement sentencia=c.conexion.createStatement();
             resultadoProductos=sentencia.executeQuery(consulta);
-            
-            
-            
+                       
             datosConsulta=resultadoProductos.getMetaData();
             String[] filasConsulta=new String[datosConsulta.getColumnCount()];
             valoresTabla=(DefaultTableModel)tablaRecetas.getModel();
              
             int a,num;
-                       
             
             while(resultadoProductos.next()){
-               /* for (int i=0;i<filasConsulta.length;i++)
-                {
-                    filasConsulta[i]=resultadoProductos.getString(i+1);
-                    
-                }*/
-                   
+                                 
                     filasConsulta[0]=resultadoProductos.getString(1);
                     filasConsulta[1]=resultadoProductos.getString(2);
                     filasConsulta[2]=resultadoProductos.getString(3);
-                    
-                    
                   
                    valoresTabla.addRow(filasConsulta);
             }
@@ -106,6 +96,7 @@ DefaultTableModel valoresTabla;
         tablaRecetas = new javax.swing.JTable();
         butt_verReceta = new javax.swing.JButton();
         butt_nuevaReceta = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -131,10 +122,10 @@ DefaultTableModel valoresTabla;
             }
         });
         tablaRecetas.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
-            }
             public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
                 tablaRecetasCaretPositionChanged(evt);
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         jScrollPane1.setViewportView(tablaRecetas);
@@ -154,6 +145,9 @@ DefaultTableModel valoresTabla;
             }
         });
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel1.setText("Recetas registradas");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -167,17 +161,23 @@ DefaultTableModel valoresTabla;
                         .addComponent(butt_nuevaReceta))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(29, 29, 29))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(48, 48, 48)
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addGap(23, 23, 23)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(45, 45, 45)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(butt_nuevaReceta)
                     .addComponent(butt_verReceta))
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -258,6 +258,7 @@ DefaultTableModel valoresTabla;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton butt_nuevaReceta;
     private javax.swing.JButton butt_verReceta;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tablaRecetas;
     // End of variables declaration//GEN-END:variables
