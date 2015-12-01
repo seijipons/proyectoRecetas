@@ -5,9 +5,13 @@
  */
 package proyectorecetas;
 
+import static java.awt.image.ImageObserver.WIDTH;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Calendar;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -19,14 +23,14 @@ public class Ventas extends javax.swing.JFrame {
     /**
      * Creates new form Ventas
      */
-    int idRec,porc;
+    int idVenta,folioVenta;
     DefaultTableModel valoresTabla;
     DefaultTableModel valoresReceta;
     
     public Ventas() {
         initComponents();
         
-        consultaRecetas();
+        consultaRecetas("");
         //listaIngredientes();
         //operacionPrecioTotal();
         //operacionPorcion();
@@ -41,29 +45,28 @@ public class Ventas extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabla_consumo = new javax.swing.JTable();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tabla_recetas = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        txt_filtro = new javax.swing.JTextField();
+        btnBuscar = new javax.swing.JButton();
+        btnAgregaReceta = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txt_porciones = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
-        jLabel9 = new javax.swing.JLabel();
+        btnNuevaVenta = new javax.swing.JButton();
+        txt_folio = new javax.swing.JTextField();
+        txt_montoTotal = new javax.swing.JTextField();
+        txt_fecha = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel2.setText("1234");
+        setSize(new java.awt.Dimension(650, 400));
 
         jLabel3.setText("Información de Venta #");
 
@@ -71,10 +74,7 @@ public class Ventas extends javax.swing.JFrame {
 
         tabla_consumo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Platillo", "Precio", "Cantidad", "Total"
@@ -94,8 +94,6 @@ public class Ventas extends javax.swing.JFrame {
 
         jLabel5.setText("Fecha:");
 
-        jLabel6.setText("30/12/2015");
-
         tabla_recetas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -113,41 +111,74 @@ public class Ventas extends javax.swing.JFrame {
             }
         });
         tabla_recetas.setName("tabla_recetas"); // NOI18N
+        tabla_recetas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabla_recetasMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tabla_recetas);
 
         jLabel7.setText("Buscar:");
 
-        jTextField1.setMaximumSize(new java.awt.Dimension(100, 20));
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txt_filtro.setMaximumSize(new java.awt.Dimension(100, 20));
+        txt_filtro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txt_filtroActionPerformed(evt);
             }
         });
 
-        jButton1.setText("ir");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnBuscar.setText("ir");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnBuscarActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Agregar selección");
+        btnAgregaReceta.setText("Agregar selección");
+        btnAgregaReceta.setEnabled(false);
+        btnAgregaReceta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregaRecetaActionPerformed(evt);
+            }
+        });
 
         jLabel8.setText("Porcciones:");
 
-        jTextField2.setMaximumSize(new java.awt.Dimension(50, 20));
-        jTextField2.setMinimumSize(new java.awt.Dimension(50, 20));
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        txt_porciones.setText("1");
+        txt_porciones.setMaximumSize(new java.awt.Dimension(50, 20));
+        txt_porciones.setMinimumSize(new java.awt.Dimension(50, 20));
+        txt_porciones.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                txt_porcionesActionPerformed(evt);
             }
         });
 
         jLabel1.setText("Total venta ($):");
 
         jButton3.setText("Guardar");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
-        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        btnNuevaVenta.setText("Nueva venta");
+        btnNuevaVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevaVentaActionPerformed(evt);
+            }
+        });
+
+        txt_folio.setEditable(false);
+        txt_folio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_folioActionPerformed(evt);
+            }
+        });
+
+        txt_montoTotal.setEditable(false);
+
+        txt_fecha.setText("2015-11-30");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -159,88 +190,174 @@ public class Ventas extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                        .addComponent(txt_filtro, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1)
+                        .addComponent(btnBuscar)
                         .addGap(128, 128, 128)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(209, 209, 209)
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel6))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)))
+                        .addComponent(jLabel4)
+                        .addGap(260, 260, 260))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txt_folio, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnNuevaVenta))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton2))
+                                .addComponent(txt_porciones, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(57, 57, 57)
+                                .addComponent(btnAgregaReceta))
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton3)))
-                .addGap(211, 211, 211))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 304, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txt_montoTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jButton3))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txt_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(22, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(17, 17, 17)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel3)
+                    .addComponent(txt_folio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnNuevaVenta)
+                    .addComponent(txt_fecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel7)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                    .addComponent(txt_filtro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBuscar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton2)
                         .addComponent(jLabel1)
                         .addComponent(jButton3)
-                        .addComponent(jLabel9))
+                        .addComponent(txt_montoTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel8)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(132, 132, 132))
+                        .addComponent(txt_porciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAgregaReceta))
+                .addGap(23, 23, 23))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        String filtro = txt_filtro.getText();
+        consultaRecetas(filtro);
+    }//GEN-LAST:event_btnBuscarActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txt_filtroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_filtroActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txt_filtroActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void txt_porcionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_porcionesActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_txt_porcionesActionPerformed
+
+    private void tabla_recetasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabla_recetasMouseClicked
+        System.out.println("idVenta-->"+idVenta);
+        if(idVenta!=0){
+            btnAgregaReceta.setEnabled(true);
+        }
+    }//GEN-LAST:event_tabla_recetasMouseClicked
+
+    private void btnAgregaRecetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregaRecetaActionPerformed
+        //Limpiar tabla 
+        if (tabla_consumo.getRowCount()>0){
+            limpiaTablaConsumo();
+        }
+        //tomar la fila seleccionada
+        int num=tabla_recetas.getSelectedRow();
+        
+        //convierte a string el contenido de la fila en la posicion seleccionada (que es num) de la columna 0
+        String val = tabla_recetas.getModel().getValueAt(num, 0).toString();
+        String montoPorsion;
+        montoPorsion=tabla_recetas.getModel().getValueAt(num, 2).toString();
+        double monto = Double.parseDouble(montoPorsion);
+        
+        //convierte en entero el valor del contenido en la columna de índice de la fila seleccionada
+        int idReceta=Integer.parseInt(val);
+        
+        double cantidad= Double.parseDouble(txt_porciones.getText());
+           
+        agregarReceta(idVenta, idReceta, cantidad, monto);
+        actualizaListaConsumo();
+        operacionPrecioTotal();
+        
+    }//GEN-LAST:event_btnAgregaRecetaActionPerformed
+
+    private void txt_folioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_folioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_folioActionPerformed
+
+    private void btnNuevaVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaVentaActionPerformed
+        System.out.println("running");
+        //running
+        
+        String fecha = txt_fecha.getText();
+        ultimaVentaCreada();
+        
+        try{
+            ConectaBD c = new ConectaBD(1);
+            int nueVenta;
+            folioVenta++;
+            txt_folio.setText(""+folioVenta);
+            System.out.println("Fecha --> "+fecha);
+            String consulta="INSERT INTO `ventas` (`idVenta`, `folio`, `fecha`, `montoTotal`) VALUES (NULL, '"+folioVenta+"', '"+fecha+"', '0');";
+            System.out.println(consulta);
+            
+            Statement sentencia=c.conexion.createStatement();
+            nueVenta=sentencia.executeUpdate(consulta);
+            System.out.println("Registrando nueva incorporación.");
+            System.out.println(consulta);
+        }catch(SQLException ex){
+            txt_fecha.setText("");
+            JOptionPane.showMessageDialog(rootPane, "Fecha inválida. Escribe una fecha.", "Error.", WIDTH);
+            ex.printStackTrace();
+        }
+        
+    }//GEN-LAST:event_btnNuevaVentaActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        System.out.println("running");
+        //running
+        try{
+            ConectaBD c = new ConectaBD(1);
+            int nueVenta;
+            String consulta="UPDATE `ventas` SET `montoTotal` = '"+txt_montoTotal.getText()+"' WHERE `ventas`.`idVenta` = "+idVenta+";";
+            System.out.println(consulta);
+            
+            Statement sentencia=c.conexion.createStatement();
+            nueVenta=sentencia.executeUpdate(consulta);
+            System.out.println("Registrando nueva incorporación.");
+            System.out.println(consulta);
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(rootPane, "Dato inválido. Seleccione otro valor, posiblemente dato duplicado. No se registró.", "Error.", WIDTH);
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -277,64 +394,171 @@ public class Ventas extends javax.swing.JFrame {
         });
     }
     
-    private void consultaRecetas(){
+    private void consultaRecetas(String filtro){
         
         try{
             ConectaBD c=new ConectaBD(1);
             ResultSet resultadoProductos;
             ResultSetMetaData datosConsulta;
-            String consulta="SELECT * FROM vwPrecioTotalRecetas";
+            String consulta="SELECT * FROM vwPrecioTotalRecetas WHERE receta LIKE '%"+filtro+"%'";
             Statement sentencia=c.conexion.createStatement();
             resultadoProductos=sentencia.executeQuery(consulta);
             
             datosConsulta=resultadoProductos.getMetaData();
             String[] filasConsulta=new String[datosConsulta.getColumnCount()];
             valoresTabla=(DefaultTableModel) tabla_recetas.getModel();
-            int a,num;
-                       
             
             while(resultadoProductos.next()){
-               /* for (int i=0;i<filasConsulta.length;i++)
-                {
-                    filasConsulta[i]=resultadoProductos.getString(i+1);
-                    
-                }*/
-                   
-                    filasConsulta[0]=resultadoProductos.getString(1);
-                    filasConsulta[1]=resultadoProductos.getString(2);
-                    filasConsulta[2]=resultadoProductos.getString(3);
-                    
-                  
-                   valoresTabla.addRow(filasConsulta);
+
+                filasConsulta[0]=resultadoProductos.getString(1);
+                filasConsulta[1]=resultadoProductos.getString(2);
+                filasConsulta[2]=resultadoProductos.getString(3);
+
+               valoresTabla.addRow(filasConsulta);
             }
             tabla_recetas.setModel(valoresTabla);
             
         }catch(Exception ex){
             System.out.println("No consulta productos: "+ ex.getMessage());
             ex.printStackTrace();
-            
-            
+        }
+    }
+    
+    void limpiaTablaConsumo(){
+        if(valoresReceta.getRowCount()>0){
+            for(int i=valoresReceta.getRowCount()-1;i>=0;i--){
+            valoresReceta.removeRow(i);
+        }
+        tabla_consumo.setModel(valoresReceta);
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnAgregaReceta;
+    private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnNuevaVenta;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTable tabla_consumo;
     private javax.swing.JTable tabla_recetas;
+    private javax.swing.JTextField txt_fecha;
+    private javax.swing.JTextField txt_filtro;
+    private javax.swing.JTextField txt_folio;
+    private javax.swing.JTextField txt_montoTotal;
+    private javax.swing.JTextField txt_porciones;
     // End of variables declaration//GEN-END:variables
+
+    private void agregarReceta(int idVenta, int idReceta, double cantidad, double monto) {
+        
+        System.out.println("running");
+        //running
+        try{
+            ConectaBD c = new ConectaBD(1);
+            int insertaReceta;
+            String consulta="INSERT INTO rel_ven_rec VALUES ('"+idVenta+"', '"+idReceta+"', "+cantidad+", "+monto+");";
+            System.out.println(consulta);
+            
+            Statement sentencia=c.conexion.createStatement();
+            insertaReceta=sentencia.executeUpdate(consulta);
+            System.out.println("Registrando nueva incorporación.");
+            System.out.println(consulta);
+        }catch(SQLException ex){
+            JOptionPane.showMessageDialog(rootPane, "Unidad Inválida. Seleccione otro valor, posiblemente dato duplicado. No se registró.", "Error.", WIDTH);
+            ex.printStackTrace();
+        }
+    
+    }
+
+    private void actualizaListaConsumo() {
+        
+        try{
+            ConectaBD c=new ConectaBD(1);
+            ResultSet resultadoProductos;
+            ResultSetMetaData datosConsulta;
+            String consulta="SELECT * FROM `vwresumenventa` WHERE idVenta ="+idVenta;
+            Statement sentencia=c.conexion.createStatement();
+            resultadoProductos=sentencia.executeQuery(consulta);
+            
+            datosConsulta=resultadoProductos.getMetaData();
+            String[] filasConsulta=new String[datosConsulta.getColumnCount()];
+            valoresReceta=(DefaultTableModel) tabla_consumo.getModel();
+            
+            int cantidad = 0;
+            double monto = 0;
+            
+            while(resultadoProductos.next()){
+
+                filasConsulta[0]=resultadoProductos.getString(2);
+                filasConsulta[1]=resultadoProductos.getString(3);
+                cantidad = Integer.parseInt(resultadoProductos.getString(4));
+                monto = Double.parseDouble(resultadoProductos.getString(5));
+                
+                filasConsulta[2]=cantidad+"";
+                filasConsulta[3]=monto+"";
+               valoresReceta.addRow(filasConsulta);
+            }
+            tabla_consumo.setModel(valoresReceta);
+            
+            
+        }catch(Exception ex){
+            System.out.println("No consulta recetas: "+ ex.getMessage());
+            ex.printStackTrace();
+        }
+        
+    }
+
+    private void operacionPrecioTotal() {
+        int rowCnt = tabla_consumo.getRowCount();
+        double precTtl=0,prec=0;
+        String val;
+        
+        for(int i=0;i<rowCnt;i++){
+            val = tabla_consumo.getModel().getValueAt(i, 3).toString();
+            prec= Double.parseDouble(val);
+            System.out.println("precTtl= "+precTtl);
+            System.out.println("prec= "+prec);
+            System.out.println("");
+            precTtl=precTtl+prec;
+            System.out.println("precTtl= "+precTtl);
+        }
+        val=""+precTtl;
+        System.out.println("precTtl= "+precTtl);
+        txt_montoTotal.setText(val);
+    }
+
+    private void ultimaVentaCreada() {
+        try{
+            ConectaBD c=new ConectaBD(1);
+            ResultSet resultadoProductos;
+            ResultSetMetaData datosConsulta;
+            String consulta="SELECT * FROM `ventas` ORDER BY `idVenta` DESC LIMIT 1";
+            Statement sentencia=c.conexion.createStatement();
+            resultadoProductos=sentencia.executeQuery(consulta);
+            
+            datosConsulta=resultadoProductos.getMetaData();
+            String[] filasConsulta=new String[datosConsulta.getColumnCount()];
+            valoresTabla=(DefaultTableModel) tabla_recetas.getModel();
+            folioVenta=0;
+            idVenta=0;
+            while(resultadoProductos.next()){
+                idVenta=Integer.parseInt(resultadoProductos.getString(1));
+                folioVenta=Integer.parseInt(resultadoProductos.getString(2));
+                txt_fecha.setText(resultadoProductos.getString(3));
+                //filasConsulta[2]=resultadoProductos.getString(3);
+
+               valoresTabla.addRow(filasConsulta);
+            }
+            tabla_recetas.setModel(valoresTabla);
+        }catch(Exception ex){
+            System.out.println("No consulta productos: "+ ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
 }
